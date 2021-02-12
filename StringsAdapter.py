@@ -1,11 +1,17 @@
-mHelpText = "это справка\n" \
+selectTextCommands = ["выбрать тему", "тема", "/select_theme", "select_theme"]
+kinematicsCommands = ["кинематика", "/kinematic", "/kinematics", "/kin", "kinematic", "kinematics", "kin"]
+dynamicsCommands = ["динамика", "/dynamics", "/dynamic", "dynamics", "dynamic"]
+electricStaticCommands = ["электростатика", "/elecrostatics", "/elecrostatic", "elecrostatics", "elecrostatic"]
+ballisticsCommands = ["баллистика", "балистика", "боллистика", "болистика", "/ballistics", "/ballistic", "ballistics", "ballistic"]
+
+
+HelpText = "это справка\n" \
             "/help -- этот текст\n" \
             "/start -- начать заного\n" \
-            "/select_theme -- выбрать тему"
-mNotUnderstandText = "такой комманды не существует! \n Спавка доступна по комманде /help"
-def getHelpText():
-    global mHelpText
-    return mHelpText
-def getNotUnderstandText():
-    global mNotUnderstandText
-    return mNotUnderstandText
+            "/select_theme -- выбрать тему\n" \
+            "/error_report -- сообщить об ошибке \n" \
+            "/authors -- разработчики"
+
+ThanksForErrorReportMessage = "Спасибо, что помагаете делать бота лучше!"
+NotUnderstandText = "такой комманды не существует! \n Спавка доступна по комманде /help"
+
