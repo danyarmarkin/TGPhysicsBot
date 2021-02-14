@@ -1,3 +1,6 @@
+import values.strings.exam_9_class as exam9Class
+
+
 selectTextCommands = ["выбрать тему", "тема", "/select_theme", "select_theme"]
 kinematicsCommands = ["кинематика", "/kinematic", "/kinematics", "/kin", "kinematic", "kinematics", "kin"]
 dynamicsCommands = ["динамика", "/dynamics", "/dynamic", "dynamics", "dynamic"]
@@ -13,5 +16,5 @@ HelpText = "это справка\n" \
             "/authors -- разработчики"
 
 ThanksForErrorReportMessage = "Спасибо, что помагаете делать бота лучше!"
-NotUnderstandText = "такой комманды не существует! \n Спавка доступна по комманде /help"
+NotUnderstandText = "такой комманды не существует! \n Справка доступна по комманде /help"
 

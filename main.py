@@ -28,6 +28,7 @@ def startText(message):
 
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
+    print(message.from_user.first_name, message.from_user.last_name, "(" + str(message.from_user.id) + "):", message.text)
     m = message.text.lower()
     # Help
     if m == '/help' or m == "справка":
@@ -35,23 +36,37 @@ def get_text_messages(message):
 
     # Authors
     elif m == "/authors":
-        bot.send_message(message.from_user.id, "Авторы: \nDanila Yarmarkin ПФМЛ №239 г. Санкт-Петербурга", reply_markup=types.ReplyKeyboardRemove())
+        bot.send_message(message.from_user.id, "Авторы: \nDanila Yarmarkin", reply_markup=types.ReplyKeyboardRemove())
 
     # Error report
     elif m == "/error_report":
-        bot.send_message(message.from_user.id, 'опишите проблему', reply_markup=types.ReplyKeyboardRemove())
+        bot.send_message(message.from_user.id, 'Опишите проблему', reply_markup=types.ReplyKeyboardRemove())
         bot.register_next_step_handler(message, makeReport)
 
     # Select theme
     elif m in strings.selectTextCommands:
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
-        btn1 = types.KeyboardButton('Кинематика')
-        btn2 = types.KeyboardButton('Динамика')
-        btn3 = types.KeyboardButton('Электростатика')
-        markup.add(btn1, btn2, btn3)
-        bot.send_message(message.chat.id,
-                         "Выберите тему",
-                         reply_markup=markup)
+        bot.send_message(message.chat.id, "Выберите тему\n"
+                                          "Кинематика -- /kinematic\n"
+                                          "Динамика -- /dynamic\n"
+                                          "Экзамены 239 9 класс -- /239_exam_9", reply_markup=types.ReplyKeyboardRemove())
+    #239 exams
+    elif m == "/239_exam_9":
+        bot.send_message(message.chat.id, "Выберите билет\n"
+                                          "1 текст -- /239_exam_9_1\n"
+                                          "1 pdf -- /239_exam_9_1_pdf\n"
+                                          "2 -- /239_exam_9_2\n"
+                                          "3 -- /239_exam_9_3\n"
+                                          "4 -- /239_exam_9_4\n"
+                                          "5 -- /239_exam_9_5\n"
+                                          "6 -- /239_exam_9_6", reply_markup=types.ReplyKeyboardRemove())
+    elif m == "/239_exam_9_1":
+        bot.send_message(message.chat.id, 'Вы выбрали билет №1', reply_markup=types.ReplyKeyboardRemove())
+        for i in strings.exam9Class.task1:
+            bot.send_message(message.chat.id, i)
+            time.sleep(0.1)
+    elif m == "/239_exam_9_1_pdf":
+        bot.send_document(message.chat.id, open('values/raw/exam_9_class/Bilet_1.pdf', 'rb'), reply_markup=types.ReplyKeyboardRemove())
+
     # Kinematics
     elif m in strings.kinematicsCommands:
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
@@ -70,15 +85,27 @@ def get_text_messages(message):
                                           "максимальную высоту полета тела и угол падения тела из начальной высоты тела,"
                                           " начальной скорости тела и угла между вектором начальной скорости тела и горизонтом")
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
-        btn1 = types.KeyboardButton('/start_ballistics')
-        markup.add(btn1)
+        btn1 = types.KeyboardButton('/start_ballistic')
+        btn2 = types.KeyboardButton('/formulas_ballistic')
+        markup.add(btn1, btn2)
         bot.send_message(message.chat.id, "Бот считает данные без сопротивления воздуха", reply_markup=markup)
-        bot.send_message(message.chat.id, "напишите /start_ballistics чтобы начать")
+        bot.send_message(message.chat.id, "напишите /start_ballistic чтобы начать или /formulas_ballistic чтобы посмотреть формулы")
 
     # Ballistic start
-    elif m == "/start_ballistics":
+    elif m == "/start_ballistic":
         bot.send_message(message.chat.id, "Введите начальную высоту тела (м)", reply_markup=types.ReplyKeyboardRemove())
         bot.register_next_step_handler(message, getStartHeigh)
+
+    # Ballistic formulas
+    elif m == "/formulas_ballistic":
+        bot.send_message(message.chat.id, "Вот формулы по баллистике", reply_markup=types.ReplyKeyboardRemove())
+        bot.send_photo(message.chat.id, open('values/layouts/Kinematic/Ballistic/0.png', 'rb'))
+        bot.send_photo(message.chat.id, open('values/layouts/Kinematic/Ballistic/1.png', 'rb'))
+        bot.send_photo(message.chat.id, open('values/layouts/Kinematic/Ballistic/2.png', 'rb'))
+        bot.send_photo(message.chat.id, open('values/layouts/Kinematic/Ballistic/3.png', 'rb'))
+        bot.send_photo(message.chat.id, open('values/layouts/Kinematic/Ballistic/4.png', 'rb'))
+        bot.send_photo(message.chat.id, open('values/layouts/Kinematic/Ballistic/5.png', 'rb'))
+        bot.send_document(message.chat.id, open('values/layouts/Kinematic/Ballistic/formulas.pdf', 'rb'))
 
     else:
         bot.send_message(message.from_user.id, strings.NotUnderstandText, reply_markup=types.ReplyKeyboardRemove())
@@ -106,8 +133,7 @@ def makeReport(message):
     except Exception:
         print("e")
 
-
-# Ballistic
+# =======Ballistic============
 g = 10
 alpha = 0
 startSpeed = 0
@@ -170,6 +196,8 @@ def getG(message):
     try:
         g = float(message.text)
         bot.send_message(message.chat.id, "Производятся рассчеты...")
+        bot.send_message(message.chat.id, "Если в ответе \"0\", то либо так и должно быть, "
+                                          "либо введенные числа слишком большие")
         b = Kinematics.Ballistics(startSpeed, startHeight, alpha, g)
         bot.send_message(message.chat.id, "Время полета " + str(b.time) + " с")
         bot.send_message(message.chat.id, "Дальность полета " + str(b.len) + " м")
@@ -177,6 +205,7 @@ def getG(message):
         bot.send_message(message.chat.id, "Максимальная высота полета " + str(b.maxHeight) + " м")
         bot.send_message(message.chat.id, "Угол падения " + str(b.phi) + u" \u00b0")
         ballisticError()
+        del b
     except TypeError:
         bot.send_message(message.from_user.id, "неверный формат данных")
         bot.register_next_step_handler(message, get_text_messages)
